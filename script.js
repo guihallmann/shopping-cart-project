@@ -25,10 +25,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function getResults(arr) {
-  arr.forEach(createProductItemElement);
-}
-
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -37,7 +33,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -45,8 +41,24 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function getResults(arr) {
+  arr.forEach(createProductItemElement);
+}
+
+function addListenerOnButtons() {
+  const cartList = document.querySelector('.cart__items');
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((button) => button.addEventListener('click', async ({ target }) => {
+    const id = getSkuFromProductItem(target.parentNode);
+    const itemInfo = await fetchItem(id);
+    const li = createCartItemElement(itemInfo);
+    cartList.appendChild(li);
+  }));
+}
+
 window.onload = async () => { 
-  const data = await fetchProducts('computador');
-  const response = data.results;
-  getResults(response);
+  const allData = await fetchProducts('computador');
+  const resultArr = allData.results;
+  getResults(resultArr);
+  addListenerOnButtons();
 };

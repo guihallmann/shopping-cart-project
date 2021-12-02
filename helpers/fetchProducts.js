@@ -5,6 +5,7 @@ const fetchProducts = async (query) => {
     return data;
   } catch (error) {
     return new Error('You must provide an url', error);
+    // https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/try...catch
   }
 };
 

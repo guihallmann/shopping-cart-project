@@ -22,7 +22,7 @@ describe('1 - Teste a função fecthProducts', () => {
     const expected = computadorSearch;
     expect(actual).toEqual(expected);
   });
-  test('Testa se fetchProducts sem parâmetros retorna um erro', async () => {
+  test('Testa se ao chamar fetchProducts sem parâmetros um erro é retornado', async () => {
     const actual = await fetchProducts();
     const error = new Error('You must provide an url');
     expect(actual).toEqual(error);
