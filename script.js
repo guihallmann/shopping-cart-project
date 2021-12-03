@@ -1,5 +1,7 @@
 const clearButton = document.querySelector('.empty-cart');
 const loadingArea = document.querySelector('.loading-area');
+const totalPriceArea = document.querySelector('.total-price');
+const itemsArr = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -7,6 +9,14 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
+
+// async function totalPrice() {
+//   let total = 0;
+//   itemsArr.forEach((item) => {
+//     total += item.price;
+//   });
+//   totalPriceArea.innerText = total;
+// }
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -32,7 +42,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+async function cartItemClickListener(event) {
   event.target.remove();
 }
 
