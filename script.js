@@ -1,7 +1,7 @@
 const clearButton = document.querySelector('.empty-cart');
 const loadingArea = document.querySelector('.loading-area');
 const totalPriceArea = document.querySelector('.total-price');
-const itemsArr = [];
+let dataArr = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -10,7 +10,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-// async function totalPrice() {
+// function showPrice() {
 //   let total = 0;
 //   itemsArr.forEach((item) => {
 //     total += item.price;
@@ -69,8 +69,13 @@ function addListenerOnButtons() {
   buttons.forEach((button) => button.addEventListener('click', async ({ target }) => {
     const id = getSkuFromProductItem(target.parentNode);
     const itemInfo = await fetchItem(id);
+    dataArr = [...dataArr, 
+      { SKU: `${itemInfo.id}`, 
+      NAME: `${itemInfo.title}`, 
+      PRICE: `${itemInfo.price}` }];
     const li = createCartItemElement(itemInfo);
     cartList.appendChild(li);
+    saveCartItems(JSON.stringify(dataArr));
   }));
 }
 function loadingMessage() {
