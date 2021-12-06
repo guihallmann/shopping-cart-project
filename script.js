@@ -1,7 +1,7 @@
 const clearButton = document.querySelector('.empty-cart');
 const loadingArea = document.querySelector('.loading-area');
 const totalPriceArea = document.querySelector('.total-price');
-let dataArr = [];
+let totalValue = 0;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -9,14 +9,6 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
-
-// function showPrice() {
-//   let total = 0;
-//   itemsArr.forEach((item) => {
-//     total += item.price;
-//   });
-//   totalPriceArea.innerText = total;
-// }
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -44,6 +36,11 @@ function getSkuFromProductItem(item) {
 
 async function cartItemClickListener(event) {
   event.target.remove();
+  const text = event.target.innerText;
+  const id = text.substr(5, 13); // Como pegar parte de uma string https://www.w3schools.com/jsref/jsref_substr.asp
+  const info = await fetchItem(id);
+  totalValue -= info.price;
+  totalPriceArea.innerText = totalValue.toFixed(2);
 }
 
 clearButton.addEventListener('click', () => {
@@ -55,6 +52,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  totalValue += salePrice;
+  totalPriceArea.innerText = totalValue.toFixed(2);
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -69,13 +68,8 @@ function addListenerOnButtons() {
   buttons.forEach((button) => button.addEventListener('click', async ({ target }) => {
     const id = getSkuFromProductItem(target.parentNode);
     const itemInfo = await fetchItem(id);
-    dataArr = [...dataArr, 
-      { SKU: `${itemInfo.id}`, 
-      NAME: `${itemInfo.title}`, 
-      PRICE: `${itemInfo.price}` }];
     const li = createCartItemElement(itemInfo);
     cartList.appendChild(li);
-    saveCartItems(JSON.stringify(dataArr));
   }));
 }
 function loadingMessage() {
