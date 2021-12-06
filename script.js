@@ -1,7 +1,9 @@
 const clearButton = document.querySelector('.empty-cart');
 const loadingArea = document.querySelector('.loading-area');
 const totalPriceArea = document.querySelector('.total-price');
+const cartList = document.querySelector('.cart__items');
 let totalValue = 0;
+let cartArr = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -41,6 +43,8 @@ async function cartItemClickListener(event) {
   const info = await fetchItem(id);
   totalValue -= info.price;
   totalPriceArea.innerText = totalValue;
+  cartArr = cartArr.filter((item) => item !== event.target.innerText);
+  saveCartItems(JSON.stringify(cartArr));
 }
 
 clearButton.addEventListener('click', () => {
@@ -63,13 +67,14 @@ function getResults(arr) {
 }
 
 function addListenerOnButtons() {
-  const cartList = document.querySelector('.cart__items');
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((button) => button.addEventListener('click', async ({ target }) => {
     const id = getSkuFromProductItem(target.parentNode);
     const itemInfo = await fetchItem(id);
     const li = createCartItemElement(itemInfo);
     cartList.appendChild(li);
+    cartArr.push(li.innerText);
+    saveCartItems(JSON.stringify(cartArr));
   }));
 }
 function loadingMessage() {
@@ -90,4 +95,16 @@ window.onload = async () => {
   getResults(resultArr);
   addListenerOnButtons();
   removeLoading();
+  let savedList = getSavedCartItems();
+  if (savedList !== undefined) {
+    savedList = JSON.parse(savedList);
+    savedList.forEach((item) => {
+      const value = Number(item.split('$')[1]);
+      totalValue += value;
+      totalPriceArea.innerText = totalValue;
+      const li = document.createElement('li'); li.className = 'cart__item'; li.innerText = item; 
+      li.addEventListener('click', cartItemClickListener);
+      cartList.appendChild(li);
+    });
+  }
 };
