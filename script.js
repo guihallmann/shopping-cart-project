@@ -40,7 +40,7 @@ async function cartItemClickListener(event) {
   const id = text.substr(5, 13); // Como pegar parte de uma string https://www.w3schools.com/jsref/jsref_substr.asp
   const info = await fetchItem(id);
   totalValue -= info.price;
-  totalPriceArea.innerText = totalValue.toFixed(2);
+  totalPriceArea.innerText = totalValue;
 }
 
 clearButton.addEventListener('click', () => {
@@ -53,7 +53,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   totalValue += salePrice;
-  totalPriceArea.innerText = totalValue.toFixed(2);
+  totalPriceArea.innerText = totalValue;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
